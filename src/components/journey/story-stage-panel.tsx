@@ -1,6 +1,19 @@
 import Link from "next/link";
-import { ChevronRightIcon, HeartIcon } from "@/components/icons";
+import { ChevronRightIcon } from "@/components/icons";
+import { PlanningIllustration } from "@/components/illustrations/planning";
+import { CycleIllustration } from "@/components/illustrations/cycle";
+import { InseminationIllustration } from "@/components/illustrations/insemination";
+import { PostProcedureIllustration } from "@/components/illustrations/post-procedure";
+import { TestResultIllustration } from "@/components/illustrations/test-result";
 import type { JourneyStoryStage } from "@/lib/journey-story";
+
+function ChapterIllustration({ stage }: { stage: JourneyStoryStage }) {
+  if (stage.illustration === "planning") return <PlanningIllustration />;
+  if (stage.illustration === "cycle") return <CycleIllustration />;
+  if (stage.illustration === "insemination") return <InseminationIllustration />;
+  if (stage.illustration === "post") return <PostProcedureIllustration />;
+  return <TestResultIllustration />;
+}
 
 export function StoryStagePanel({
   stage,
@@ -15,14 +28,7 @@ export function StoryStagePanel({
 
   return (
     <div className="story-stage-panel-inner">
-      <div className={`story-scene story-scene-${stage.key}`} aria-hidden="true">
-        <span className="story-orbit story-orbit-a" />
-        <span className="story-orbit story-orbit-b" />
-        <span className="story-figure story-figure-a" />
-        <span className="story-figure story-figure-b" />
-        <span className="story-symbol"><HeartIcon /></span>
-      </div>
-
+      <div className="story-illustration"><ChapterIllustration stage={stage} /></div>
       <p className="story-stage-story">{stage.story}</p>
 
       {showDates && (
