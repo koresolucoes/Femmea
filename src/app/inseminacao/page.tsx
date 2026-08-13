@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CalendarIcon, CheckIcon, ChevronRightIcon, HeartIcon, SparklesIcon } from "@/components/icons";
+import { FemmeaJourneyHeader, JourneyTabs } from "@/components/journey-navigation";
 import { MobileShell } from "@/components/mobile-shell";
 import { requireUser } from "@/lib/auth";
 import { CONTENT_LIBRARY, JOURNEY_STAGES, formatJourneyDate, resolveJourneyStage, stageIndex } from "@/lib/journey";
@@ -9,10 +10,7 @@ import type { Journey, JourneyStage } from "@/types/journey";
 import { toggleChecklistItem, updateJourneyDates } from "./actions";
 
 type Tab = "timeline" | "checklist" | "conteudos";
-
-type Props = {
-  searchParams: Promise<{ tab?: string }>;
-};
+type Props = { searchParams: Promise<{ tab?: string }> };
 
 const iconByStage = {
   planning: CalendarIcon,
@@ -21,6 +19,16 @@ const iconByStage = {
   post_procedure: HeartIcon,
   pregnancy_test: SparklesIcon,
 } satisfies Record<JourneyStage, typeof CalendarIcon>;
+
+const MAIN_CHECKLIST_KEYS = new Set([
+  "initial_consultation",
+  "requested_exams",
+  "medication_plan",
+  "monitoring_scheduled",
+  "procedure_day",
+  "post_care",
+  "pregnancy_test",
+]);
 
 export default async function InseminacaoPage({ searchParams }: Props) {
   const user = await requireUser();
@@ -48,44 +56,23 @@ export default async function InseminacaoPage({ searchParams }: Props) {
     .eq("user_id", user.id)
     .order("sort_order", { ascending: true });
   const checklist = checklistData ?? [];
+  const visibleChecklist = checklist.filter((item) => MAIN_CHECKLIST_KEYS.has(item.item_key));
 
-  const completed = checklist.filter((item) => item.completed).length;
-  const progress = checklist.length ? Math.round((completed / checklist.length) * 100) : 0;
+  const completed = visibleChecklist.filter((item) => item.completed).length;
+  const progress = visibleChecklist.length ? Math.round((completed / visibleChecklist.length) * 100) : 0;
   const procedureDate = journey.procedure_date?.slice(0, 10) ?? "";
 
   return (
     <MobileShell>
-      <header className="journey-header">
-        <Link href="/" className="back-button" aria-label="Voltar">‹</Link>
-        <div className="journey-brand">Femmea</div>
-        <span className="header-spacer" />
-      </header>
-
-      <h1 className="page-title">Inseminação</h1>
-
-      <nav className="tabs" aria-label="Seções da jornada">
-        <Link className={tab === "timeline" ? "active" : ""} href="/inseminacao?tab=timeline">Timeline</Link>
-        <Link className={tab === "checklist" ? "active" : ""} href="/inseminacao?tab=checklist">Checklist</Link>
-        <Link className={tab === "conteudos" ? "active" : ""} href="/inseminacao?tab=conteudos">Conteúdos</Link>
-      </nav>
+      <FemmeaJourneyHeader />
+      <JourneyTabs active={tab} />
 
       {tab === "timeline" && (
         <>
           <section className="timeline-intro journey-status-intro">
             <span className="stage-kicker">Sua jornada passo a passo</span>
             <h2>{JOURNEY_STAGES[currentIndex].title}</h2>
-            <p>{JOURNEY_STAGES[currentIndex].shortDescription}</p>
-          </section>
-
-          <section className="journey-date-card">
-            <div>
-              <small>Procedimento</small>
-              <strong>{formatJourneyDate(journey.procedure_date) ?? "Ainda não definido"}</strong>
-            </div>
-            <div>
-              <small>Teste previsto</small>
-              <strong>{formatJourneyDate(journey.pregnancy_test_date) ?? "Será calculado"}</strong>
-            </div>
+            <p>Acompanhe cada etapa da sua inseminação e receba lembretes personalizados.</p>
           </section>
 
           <section className="timeline-list enhanced-timeline">
@@ -111,6 +98,17 @@ export default async function InseminacaoPage({ searchParams }: Props) {
             })}
           </section>
 
+          <section className="journey-date-card">
+            <div>
+              <small>Procedimento</small>
+              <strong>{formatJourneyDate(journey.procedure_date) ?? "Ainda não definido"}</strong>
+            </div>
+            <div>
+              <small>Teste previsto</small>
+              <strong>{formatJourneyDate(journey.pregnancy_test_date) ?? "Será calculado"}</strong>
+            </div>
+          </section>
+
           <details className="journey-settings-card">
             <summary>Ajustar datas da jornada</summary>
             <form action={updateJourneyDates} className="journey-date-form">
@@ -123,7 +121,7 @@ export default async function InseminacaoPage({ searchParams }: Props) {
                 <span>Data prevista do teste</span>
                 <input name="pregnancyTestDate" type="date" defaultValue={journey.pregnancy_test_date ?? ""} />
               </label>
-              <p>Se você deixar a data do teste vazia, o app sugere 14 dias após o procedimento. Confirme sempre as datas com a equipe responsável.</p>
+              <p>Se a data do teste ficar vazia, o app cria uma sugestão organizacional. Confirme sempre a data clínica com a equipe responsável.</p>
               <button type="submit">Salvar datas</button>
             </form>
           </details>
@@ -139,13 +137,13 @@ export default async function InseminacaoPage({ searchParams }: Props) {
           </div>
 
           <div className="checklist-progress-card">
-            <div className="checklist-progress-copy"><strong>{completed}/{checklist.length}</strong><span>itens concluídos</span></div>
+            <div className="checklist-progress-copy"><strong>{completed}/{visibleChecklist.length}</strong><span>itens concluídos</span></div>
             <div className="checklist-progress-track"><span style={{ width: `${progress}%` }} /></div>
             <b>{progress}%</b>
           </div>
 
           <div className="checklist-list">
-            {checklist.map((item) => (
+            {visibleChecklist.map((item) => (
               <form action={toggleChecklistItem} key={item.id}>
                 <input type="hidden" name="itemId" value={item.id} />
                 <input type="hidden" name="completed" value={String(item.completed)} />
@@ -160,7 +158,7 @@ export default async function InseminacaoPage({ searchParams }: Props) {
             ))}
           </div>
 
-          <aside className="journey-tip"><SparklesIcon /><span><strong>Dica</strong> Manter tudo em dia ajuda você a visualizar sua jornada com mais tranquilidade.</span></aside>
+          <aside className="journey-tip"><SparklesIcon /><span><strong>Dica</strong> Manter tudo em dia aumenta suas chances de ter mais tranquilidade na organização da jornada.</span></aside>
         </section>
       )}
 
@@ -168,7 +166,7 @@ export default async function InseminacaoPage({ searchParams }: Props) {
         <section className="content-screen">
           <div className="checklist-header-copy">
             <span className="stage-kicker">Conteúdos para você</span>
-            <h2>Informação organizada por fase</h2>
+            <h2>Informações confiáveis para cada fase</h2>
             <p>Conteúdo educativo não substitui avaliação ou orientação profissional.</p>
           </div>
 

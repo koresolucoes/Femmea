@@ -29,6 +29,7 @@ export function normalizeCycleDay(day: number | null, cycleLength = 28) {
 export function getEstimatedCyclePhase(day: number | null, cycleLength = 28): CyclePhase {
   const normalized = normalizeCycleDay(day, cycleLength) ?? 1;
   const estimatedOvulation = Math.max(10, cycleLength - 14);
+
   if (normalized <= 5) return "menstruation";
   if (normalized < estimatedOvulation) return "follicular";
   if (normalized <= estimatedOvulation + 1) return "ovulation";
@@ -41,14 +42,26 @@ export function cycleWeekWindow(cycleStartDate: string | null | undefined, timeZ
   const current = normalizeCycleDay(center, cycleLength);
   const base = new Date(`${today}T12:00:00Z`);
   const labels = ["D", "S", "T", "Q", "Q", "S", "S"];
+
   return Array.from({ length: 7 }, (_, index) => {
     const date = new Date(base);
     date.setUTCDate(base.getUTCDate() + index - 3);
     const iso = date.toISOString().slice(0, 10);
-    const absoluteDay = cycleStartDate ? Math.floor((utcDate(iso) - utcDate(cycleStartDate)) / 86_400_000) + 1 : null;
+    const absoluteDay = cycleStartDate
+      ? Math.floor((utcDate(iso) - utcDate(cycleStartDate)) / 86_400_000) + 1
+      : null;
     const normalized = normalizeCycleDay(absoluteDay, cycleLength);
     const phase = getEstimatedCyclePhase(normalized, cycleLength);
-    return { iso, label: labels[date.getUTCDay()], dayOfMonth: date.getUTCDate(), cycleDay: normalized, phase, isToday: iso === today, isCurrentCycleDay: normalized !== null && normalized === current };
+
+    return {
+      iso,
+      label: labels[date.getUTCDay()],
+      dayOfMonth: date.getUTCDate(),
+      cycleDay: normalized,
+      phase,
+      isToday: iso === today,
+      isCurrentCycleDay: normalized !== null && normalized === current,
+    };
   });
 }
 

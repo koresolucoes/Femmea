@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MobileShell } from "@/components/mobile-shell";
-import { CalendarIcon } from "@/components/icons";
+import { CalendarIcon, PlusIcon } from "@/components/icons";
 import { requireUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { monthMatrix, parseMonthParam, shiftMonth } from "@/lib/date";
@@ -13,7 +13,14 @@ export default async function CalendarPage({ searchParams }: Props) {
   const user = await requireUser();
   const supabase = await createClient();
   const { data: profile } = await supabase.from("femmea_profiles").select("timezone").eq("id", user.id).maybeSingle();
-  const { data: journey } = await supabase.from("femmea_insemination_journeys").select("cycle_start_date,procedure_date,pregnancy_test_date").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
+  const { data: journey } = await supabase
+    .from("femmea_insemination_journeys")
+    .select("cycle_start_date,procedure_date,pregnancy_test_date")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
   const timeZone = profile?.timezone || "America/Sao_Paulo";
   const params = await searchParams;
   const target = parseMonthParam(params.month, timeZone);
@@ -49,8 +56,12 @@ export default async function CalendarPage({ searchParams }: Props) {
 
   return (
     <MobileShell active="calendar">
-      <header className="simple-header"><h1>Calendário</h1></header>
-      <section className="calendar-card">
+      <header className="calendar-reference-header">
+        <div className="journey-brand">Femmea</div>
+        <h1>Calendário</h1>
+      </header>
+
+      <section className="calendar-card reference-calendar-card">
         <div className="calendar-month">
           <Link href={previousHref} aria-label="Mês anterior">‹</Link>
           <strong>{month.monthLabel}</strong>
@@ -58,13 +69,29 @@ export default async function CalendarPage({ searchParams }: Props) {
         </div>
         <div className="calendar-weekdays">{["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].map((day) => <span key={day}>{day}</span>)}</div>
         <div className="calendar-grid">
-          {month.cells.map((day, index) => day ? <div key={`${day}-${index}`} className={`${day === month.today ? "today" : ""} ${daysWithEvents.has(day) ? "has-event" : ""}`}><span>{day}</span></div> : <div key={`empty-${index}`} />)}
+          {month.cells.map((day, index) => day ? (
+            <div
+              key={`${day}-${index}`}
+              className={`${day === month.today ? "today" : ""} ${daysWithEvents.has(day) ? "has-event" : ""}`}
+            >
+              <span>{day}</span>
+            </div>
+          ) : <div key={`empty-${index}`} />)}
         </div>
       </section>
-      <section className="calendar-events">
-        <h2>Eventos da jornada</h2>
-        {events.length === 0 ? <div className="empty-state"><CalendarIcon /><p>As datas importantes da sua jornada aparecerão aqui.</p></div> : events.sort((a,b)=>a.day-b.day).map((event, index) => <div className="event-row" key={`${event.day}-${event.label}-${index}`}><span>{event.day}</span><div><strong>{event.label}</strong><small>{month.monthLabel}</small></div></div>)}
+
+      <section className="calendar-events reference-calendar-events">
+        {events.length === 0 ? (
+          <div className="empty-state"><CalendarIcon /><p>As datas importantes da sua jornada aparecerão aqui.</p></div>
+        ) : events.sort((a,b)=>a.day-b.day).map((event, index) => (
+          <div className={`event-row event-${event.kind}`} key={`${event.day}-${event.label}-${index}`}>
+            <span>{String(event.day).padStart(2, "0")}</span>
+            <div><strong>{event.label}</strong><small>{month.monthLabel}</small></div>
+          </div>
+        ))}
       </section>
+
+      <Link className="calendar-fab" href="/lembretes" aria-label="Novo lembrete"><PlusIcon /></Link>
     </MobileShell>
   );
 }

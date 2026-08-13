@@ -52,14 +52,14 @@ export async function completeOnboarding(_state: ActionState, formData: FormData
 
     const checklist = [
       ["initial_consultation", "Consulta inicial realizada", "planning", 10],
-      ["requested_exams", "Exames solicitados organizados", "planning", 20],
-      ["medication_plan", "Plano de medicação registrado", "planning", 30],
+      ["requested_exams", "Exames solicitados", "planning", 20],
+      ["medication_plan", "Início da medicação", "planning", 30],
       ["monitoring_scheduled", "Monitoramento agendado", "cycle_monitoring", 40],
       ["cycle_tracking", "Acompanhamento do ciclo atualizado", "cycle_monitoring", 50],
       ["procedure_documents", "Documentos do procedimento separados", "insemination_day", 60],
-      ["procedure_day", "Dia da inseminação confirmado", "insemination_day", 70],
-      ["post_care", "Cuidados pós-procedimento revisados", "post_procedure", 80],
-      ["pregnancy_test", "Teste de gravidez programado", "pregnancy_test", 90],
+      ["procedure_day", "Dia da inseminação", "insemination_day", 70],
+      ["post_care", "Repouso e cuidados", "post_procedure", 80],
+      ["pregnancy_test", "Teste de gravidez", "pregnancy_test", 90],
     ].map(([item_key, label, stage, sort_order]) => ({
       user_id: userId,
       journey_id: journey.id,
