@@ -1,0 +1,3 @@
+export function FaqIllustration() {
+  return <svg viewBox="0 0 240 150" aria-hidden="true"><rect width="240" height="150" rx="26" fill="#F1E7F6"/><path d="M61 54c0-20 18-35 42-35s42 15 42 35-18 35-42 35H90l-17 15 5-20C68 78 61 67 61 54Z" fill="#8E60AB"/><path d="M116 55c0-8-5-13-13-13-7 0-12 4-13 10M103 68v2" stroke="#FFF8FC" strokeWidth="7" strokeLinecap="round"/><path d="M123 91c4 17 18 27 38 27h10l14 12-4-16c8-6 13-14 13-23 0-14-10-25-28-30" fill="#D7C2E4" opacity=".9"/><path d="M27 122c21-15 27-37 19-63M208 29c-15 9-22 23-21 40" stroke="#BDA4CD" strokeWidth="4" fill="none" strokeLinecap="round" opacity=".35"/></svg>;
+}
