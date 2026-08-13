@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./milestone-04.css";
 import "./story-motion.css";
+import "./faq-motion.css";
 
 export const metadata: Metadata = {
   title: { default: "Femmea", template: "%s · Femmea" },
