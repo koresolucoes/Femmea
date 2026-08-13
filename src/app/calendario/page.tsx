@@ -23,13 +23,14 @@ export default async function CalendarPage({ searchParams }: Props) {
   const monthStart = `${month.year}-${String(month.month).padStart(2, "0")}-01T00:00:00`;
   const nextMonth = shiftMonth(month.year, month.month, 1);
   const monthEnd = `${nextMonth}-01T00:00:00`;
-  const { data: femmea_reminders = [] } = await supabase
+  const { data: remindersData } = await supabase
     .from("femmea_reminders")
     .select("title,scheduled_for")
     .eq("user_id", user.id)
     .gte("scheduled_for", monthStart)
     .lt("scheduled_for", monthEnd)
     .order("scheduled_for", { ascending: true });
+  const femmeaReminders = remindersData ?? [];
 
   const register = (dateValue: string | null, label: string, kind: CalendarEvent["kind"]) => {
     if (!dateValue) return;
@@ -40,7 +41,7 @@ export default async function CalendarPage({ searchParams }: Props) {
   register(journey?.cycle_start_date || null, "Início do ciclo", "cycle");
   register(journey?.procedure_date || null, "Inseminação", "procedure");
   register(journey?.pregnancy_test_date || null, "Teste de gravidez", "test");
-  femmea_reminders.forEach((reminder) => register(reminder.scheduled_for, reminder.title, "reminder"));
+  femmeaReminders.forEach((reminder) => register(reminder.scheduled_for, reminder.title, "reminder"));
 
   const daysWithEvents = new Set(events.map((event) => event.day));
   const previousHref = `/calendario?month=${shiftMonth(month.year, month.month, -1)}`;

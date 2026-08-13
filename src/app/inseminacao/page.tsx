@@ -41,12 +41,13 @@ export default async function InseminacaoPage({ searchParams }: Props) {
   const computedStage = resolveJourneyStage(journey);
   const currentIndex = stageIndex(computedStage);
 
-  const { data: checklist = [] } = await supabase
+  const { data: checklistData } = await supabase
     .from("femmea_journey_checklist_items")
     .select("id,item_key,label,stage,sort_order,completed,completed_at")
     .eq("journey_id", journey.id)
     .eq("user_id", user.id)
     .order("sort_order", { ascending: true });
+  const checklist = checklistData ?? [];
 
   const completed = checklist.filter((item) => item.completed).length;
   const progress = checklist.length ? Math.round((completed / checklist.length) * 100) : 0;

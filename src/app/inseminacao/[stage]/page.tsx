@@ -29,13 +29,14 @@ export default async function JourneyStagePage({ params }: Props) {
     .maybeSingle();
 
   if (!journey) redirect("/onboarding");
-  const { data: checklist = [] } = await supabase
+  const { data: checklistData } = await supabase
     .from("femmea_journey_checklist_items")
     .select("id,label,completed")
     .eq("journey_id", journey.id)
     .eq("user_id", user.id)
     .eq("stage", stage)
     .order("sort_order", { ascending: true });
+  const checklist = checklistData ?? [];
 
   const StageIcon = stage === "planning" ? CalendarIcon : stage === "cycle_monitoring" || stage === "post_procedure" ? HeartIcon : SparklesIcon;
 
