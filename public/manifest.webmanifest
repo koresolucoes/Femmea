@@ -1,0 +1,12 @@
+{
+  "name": "Femmea",
+  "short_name": "Femmea",
+  "description": "Acompanhamento personalizado da jornada de inseminação.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FCF8FD",
+  "theme_color": "#7B4AA6",
+  "lang": "pt-BR",
+  "categories": ["health", "lifestyle"]
+}
