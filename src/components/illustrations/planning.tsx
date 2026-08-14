@@ -1,0 +1,3 @@
+export function PlanningIllustration() {
+  return <svg viewBox="0 0 240 150" aria-hidden="true"><rect width="240" height="150" rx="26" fill="#F1E7F6"/><circle cx="64" cy="54" r="13" fill="#D2B8E0"/><path d="M48 103c3-31 10-46 18-46s17 15 20 46" fill="#A77BC3"/><circle cx="170" cy="52" r="13" fill="#D8C4E4"/><path d="M153 103c3-32 10-47 18-47s17 15 20 47" fill="#8355A2"/><path d="M170 69v18M161 78h18" stroke="#FFF8FC" strokeWidth="3" strokeLinecap="round"/><rect x="96" y="48" width="46" height="41" rx="8" fill="#FFF8FC"/><path d="M105 59h27M105 68h18M105 77h23" stroke="#B897CC" strokeWidth="3" strokeLinecap="round"/><path d="M22 119c28-18 31-50 18-76M204 25c-20 12-27 29-25 51" stroke="#BDA4CD" fill="none" strokeLinecap="round" opacity=".35"/></svg>;
+}

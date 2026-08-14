@@ -5,7 +5,7 @@ export function MobileShell({ children, active = "home" }: { children: React.Rea
   return (
     <main className="app-stage">
       <section className="phone-shell">
-        <div className="phone-content">{children}</div>
+        <div className="phone-content page-reveal">{children}</div>
         <nav className="bottom-nav" aria-label="Navegação principal">
           <Link href="/" className={active === "home" ? "active" : ""}><HomeIcon/><span>Início</span></Link>
           <Link href="/perfil" className={active === "profile" ? "active" : ""}><UserIcon/><span>Perfil</span></Link>
