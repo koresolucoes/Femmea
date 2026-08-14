@@ -6,9 +6,7 @@ import { isoDateInTimeZone } from "@/lib/date";
 import { createClient } from "@/lib/supabase/server";
 import { saveBasalTemperature } from "../actions";
 
-type Props = { searchParams: Promise<{ saved?: string }> };
-
-export default async function BasalTemperaturePage({ searchParams }: Props) {
+export default async function BasalTemperaturePage() {
   const user = await requireUser();
   const supabase = await createClient();
   const { data: profile } = await supabase.from("femmea_profiles").select("timezone").eq("id", user.id).maybeSingle();
@@ -20,7 +18,6 @@ export default async function BasalTemperaturePage({ searchParams }: Props) {
     .eq("user_id", user.id)
     .eq("observation_date", today)
     .maybeSingle();
-  const params = await searchParams;
 
   const { data: historyData } = await supabase
     .from("femmea_cycle_observations")
@@ -34,7 +31,7 @@ export default async function BasalTemperaturePage({ searchParams }: Props) {
   return (
     <MobileShell>
       <header className="screen-title-header">
-        <Link href="/inseminacao/cycle_monitoring" className="back-button" aria-label="Voltar">‹</Link>
+        <Link href="/registrar" className="back-button" aria-label="Voltar à central de registros">‹</Link>
         <div><div className="journey-brand">Femmea</div><h1>Temperatura basal</h1></div>
         <span className="header-spacer" />
       </header>
@@ -49,7 +46,6 @@ export default async function BasalTemperaturePage({ searchParams }: Props) {
 
       <form action={saveBasalTemperature} className="tracking-form">
         <input type="hidden" name="observationDate" value={today} />
-        {params.saved === "1" && <div className="saved-banner">Temperatura salva.</div>}
         <label>
           <span>Temperatura de hoje</span>
           <div className="temperature-input">
