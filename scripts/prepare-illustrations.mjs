@@ -28,10 +28,16 @@ function stripExportedBlackCanvas(source) {
   if (!blackPath) return { source, changed: false };
 
   const d = blackPath[1];
-  const nextSubpath = d.match(/\nM(?=[\d.+-])/);
-  if (!nextSubpath || nextSubpath.index == null) return { source, changed: false };
+  const moveCommands = [...d.matchAll(/\nM(?=[\d.+-])/g)];
+  if (moveCommands.length < 2 || moveCommands[1].index == null) {
+    return { source, changed: false };
+  }
 
-  const canvasSubpath = d.slice(0, nextSubpath.index);
+  // The image generator/exporter placed a full-canvas rectangle as the first
+  // subpath inside the same black path that also contains legitimate dark
+  // artwork. Remove only that first subpath and preserve the illustration.
+  const artworkStart = moveCommands[1].index;
+  const canvasSubpath = d.slice(0, artworkStart);
   const canvasWidth = (width + 1).toFixed(6);
   const canvasHeight = (height + 1).toFixed(6);
 
@@ -42,7 +48,7 @@ function stripExportedBlackCanvas(source) {
 
   if (!looksLikeGeneratedCanvas) return { source, changed: false };
 
-  const artworkOnlyPath = d.slice(nextSubpath.index + 1);
+  const artworkOnlyPath = d.slice(artworkStart + 1);
   const cleanedPath = blackPath[0].replace(d, artworkOnlyPath);
 
   return {
