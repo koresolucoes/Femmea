@@ -53,6 +53,12 @@ export default async function RegisterHubPage({ searchParams }: Props) {
   }
 
   const params = await searchParams;
+  const savedMessage = params.saved === "wellbeing"
+    ? "Como você está hoje foi registrado."
+    : params.saved === "symptoms"
+      ? "Sintomas de hoje foram registrados."
+      : null;
+
   const dateLabel = new Intl.DateTimeFormat("pt-BR", {
     weekday: "long",
     day: "2-digit",
@@ -72,7 +78,7 @@ export default async function RegisterHubPage({ searchParams }: Props) {
         <span className="header-spacer" />
       </header>
 
-      {params.saved === "wellbeing" && <div className="saved-banner">Como você está hoje foi registrado.</div>}
+      {savedMessage && <div className="saved-banner">{savedMessage}</div>}
 
       <section className="register-wellbeing-card">
         <span className="stage-kicker">Seu momento</span>
