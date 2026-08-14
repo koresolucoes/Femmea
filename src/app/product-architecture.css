@@ -1,0 +1,87 @@
+/* Femmea · Product architecture */
+.bottom-nav.bottom-nav-five { grid-template-columns:repeat(5,1fr); padding-left:16px; padding-right:16px; }
+.bottom-nav-five .bottom-nav-gap { min-width:58px; }
+.bottom-nav-five a { justify-self:stretch; }
+
+.quick-register-nav { position:absolute; z-index:85; left:50%; bottom:18px; transform:translateX(-50%); }
+.quick-register-nav > summary { list-style:none; width:68px; height:68px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; background:linear-gradient(145deg,#8655aa,#6f3f96); color:#fff; box-shadow:0 14px 34px rgba(102,62,133,.28); cursor:pointer; border:5px solid rgba(255,250,253,.98); transition:transform .28s var(--femmea-ease-soft), box-shadow .28s ease; position:relative; z-index:3; }
+.quick-register-nav > summary::-webkit-details-marker { display:none; }
+.quick-register-nav > summary span { display:grid; place-items:center; width:25px; height:25px; }
+.quick-register-nav > summary svg { width:21px; height:21px; }
+.quick-register-nav > summary small { font-size:8px; font-weight:750; }
+.quick-register-nav[open] > summary { transform:rotate(45deg) scale(.92); }
+.quick-register-nav[open] > summary small { opacity:0; position:absolute; }
+
+.quick-register-nav-backdrop { position:fixed; inset:0; z-index:1; background:rgba(50,34,59,.18); backdrop-filter:blur(3px); animation:femmeaFadeIn .22s ease both; }
+.quick-register-nav-sheet { position:fixed; z-index:2; left:50%; bottom:0; transform:translateX(-50%); width:min(100%,430px); padding:12px 22px 112px; border-radius:28px 28px 0 0; background:#fffafd; box-shadow:0 -24px 70px rgba(59,36,72,.16); animation:femmeaSheetIn .36s var(--femmea-ease-soft) both; }
+.quick-register-nav-sheet h2 { margin:5px 0 5px; font-family:Georgia,"Times New Roman",serif; font-size:20px; font-weight:500; color:#4e395b; }
+.quick-register-nav-sheet > p { margin:0 0 14px; font-size:9.5px; line-height:1.5; color:#7d7280; }
+.quick-register-nav-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.quick-register-nav-grid a { min-height:86px; padding:11px; border:1px solid #eadfed; border-radius:16px; background:#faf6fc; display:grid; grid-template-columns:32px 1fr; grid-template-rows:auto auto; column-gap:8px; align-content:center; transition:transform .22s var(--femmea-ease-soft), background .22s ease, border-color .22s ease; }
+.quick-register-nav-grid a:first-child { grid-column:1 / -1; }
+.quick-register-nav-grid a:active { transform:scale(.985); }
+.quick-register-nav-grid a > span { grid-row:1 / 3; width:31px; height:31px; border-radius:10px; display:grid; place-items:center; background:#eee1f4; color:#79509a; }
+.quick-register-nav-grid svg { width:17px; height:17px; }
+.quick-register-nav-grid strong { align-self:end; font-size:9.5px; color:#534657; }
+.quick-register-nav-grid small { align-self:start; margin-top:2px; font-size:7.8px; color:#938899; }
+
+@keyframes femmeaSheetIn { from { opacity:.4; transform:translate(-50%,22px); } to { opacity:1; transform:translate(-50%,0); } }
+@keyframes femmeaFadeIn { from { opacity:0; } to { opacity:1; } }
+
+.journey-artwork { display:block; width:100%; height:auto; max-height:210px; object-fit:contain; }
+.story-stage-panel-inner .journey-artwork { border-radius:18px; background:#f4eaf8; }
+
+.today-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:5px 0 12px; }
+.today-header .journey-brand { text-align:left; font-size:34px; }
+.today-header-copy p { margin:4px 0 0; font-size:10px; color:#8b8090; }
+.today-date { padding:7px 10px; border-radius:999px; background:#f1e7f6; color:#75528b; font-size:8px; font-weight:800; text-transform:capitalize; }
+
+.today-journey-card { position:relative; overflow:hidden; margin:6px 0 13px; padding:15px; border:1px solid #eadfed; border-radius:21px; background:linear-gradient(145deg,#fffafd,#f3e8f7); box-shadow:0 12px 32px rgba(93,58,113,.06); }
+.today-journey-card::after { content:""; position:absolute; width:130px; height:130px; right:-55px; top:-62px; border-radius:50%; border:1px solid rgba(139,96,170,.12); box-shadow:0 0 0 20px rgba(139,96,170,.035),0 0 0 40px rgba(139,96,170,.02); }
+.today-journey-card .stage-kicker { position:relative; z-index:1; }
+.today-journey-card h1 { position:relative; z-index:1; margin:5px 0 4px; font-family:Georgia,"Times New Roman",serif; font-size:22px; font-weight:500; color:#4d3859; }
+.today-journey-card p { position:relative; z-index:1; margin:0; max-width:270px; font-size:9.5px; line-height:1.48; color:#766c79; }
+.today-journey-meta { position:relative; z-index:1; margin-top:11px; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+.today-journey-meta span { padding:6px 9px; border-radius:999px; background:#fff; border:1px solid #e6d9eb; font-size:8px; color:#76598a; }
+.today-journey-card > a { position:relative; z-index:1; display:inline-flex; margin-top:12px; align-items:center; gap:5px; font-size:9px; font-weight:800; color:#71488e; }
+
+.today-section { margin-top:14px; }
+.today-section-heading { display:flex; align-items:end; justify-content:space-between; margin-bottom:8px; }
+.today-section-heading h2 { margin:0; font-size:13px; color:#4f4255; }
+.today-section-heading a { font-size:8.5px; color:#79538f; font-weight:750; }
+
+.today-next-card { padding:13px; display:grid; grid-template-columns:40px 1fr auto; gap:10px; align-items:center; border:1px solid #e8ddec; border-radius:17px; background:#fff; }
+.today-next-icon { width:39px; height:39px; border-radius:13px; display:grid; place-items:center; background:#efe3f5; color:#79509a; }
+.today-next-icon svg { width:19px; height:19px; }
+.today-next-card strong,.today-next-card small { display:block; }
+.today-next-card strong { font-size:10px; color:#514555; }
+.today-next-card small { margin-top:3px; font-size:8px; color:#928797; }
+.today-next-card > b { font-size:8px; color:#7a558f; font-weight:800; }
+
+.today-list { display:grid; gap:7px; }
+.today-task { min-height:49px; display:grid; grid-template-columns:27px 1fr auto; align-items:center; gap:8px; padding:9px 10px; border-radius:14px; background:#f8f2fa; border:1px solid #eee3f1; }
+.today-task > span { width:25px; height:25px; border-radius:9px; display:grid; place-items:center; background:#eee1f4; color:#7b5394; }
+.today-task svg { width:14px; height:14px; }
+.today-task strong,.today-task small { display:block; }
+.today-task strong { font-size:9px; color:#554958; }
+.today-task small { margin-top:2px; font-size:7.5px; color:#948998; }
+.today-task > b { font-size:7.5px; color:#836299; }
+
+.today-empty { padding:14px; border:1px dashed #dfd0e5; border-radius:16px; background:#fcf9fd; color:#8d8291; font-size:9px; line-height:1.45; text-align:center; }
+
+.today-register-card { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:14px; border-radius:18px; background:linear-gradient(135deg,#75469b,#8f61ae); color:#fff; box-shadow:0 13px 28px rgba(108,65,140,.18); }
+.today-register-card h2 { margin:0 0 4px; font-family:Georgia,"Times New Roman",serif; font-size:18px; font-weight:500; }
+.today-register-card p { margin:0; max-width:245px; font-size:8.5px; line-height:1.45; opacity:.86; }
+.today-register-card a { width:38px; height:38px; border-radius:50%; display:grid; place-items:center; background:#fff; color:#75469b; }
+.today-register-card svg { width:18px; height:18px; }
+
+.today-habit-card { padding:12px 13px; border-radius:16px; background:#fff; border:1px solid #e9deed; }
+.today-habit-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.today-habit-top strong { font-size:9.5px; color:#574a5b; }
+.today-habit-top span { font-size:8px; color:#846496; }
+.today-habit-track { height:7px; margin-top:9px; border-radius:999px; background:#e6d9eb; overflow:hidden; }
+.today-habit-track span { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#7d4da0,#a67ec0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-register-nav > summary,.quick-register-nav-backdrop,.quick-register-nav-sheet,.quick-register-nav-grid a { animation:none !important; transition:none !important; }
+}
