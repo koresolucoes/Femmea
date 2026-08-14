@@ -3,6 +3,7 @@ import "./globals.css";
 import "./milestone-04.css";
 import "./story-motion.css";
 import "./faq-motion.css";
+import "./product-architecture.css";
 
 export const metadata: Metadata = {
   title: { default: "Femmea", template: "%s · Femmea" },
