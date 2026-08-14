@@ -1,3 +1,3 @@
 export function PostProcedureIllustration() {
-  return <svg viewBox="0 0 240 150" aria-hidden="true"><rect width="240" height="150" rx="26" fill="#F2E8F7"/><ellipse cx="120" cy="128" rx="66" ry="9" fill="#DCCAE7"/><circle cx="121" cy="44" r="15" fill="#D1B6DF"/><path d="M96 116c5-40 13-61 26-61 15 0 25 21 29 61" fill="#9668B3"/><ellipse cx="129" cy="91" rx="18" ry="15" fill="#D5BDE2"/><path d="M104 78c8 9 15 14 25 15M148 78c-7 9-13 14-20 15" stroke="#7B4AA6" strokeWidth="5" strokeLinecap="round"/><path d="M70 120c-9-17-10-35-2-54M168 120c13-19 17-38 12-59" stroke="#B89BCC" strokeWidth="4" fill="none" strokeLinecap="round" opacity=".7"/><circle cx="55" cy="54" r="5" fill="#B48FC8" opacity=".45"/><circle cx="190" cy="48" r="6" fill="#C6A6D6" opacity=".55"/></svg>;
+  return <img className="journey-artwork" src="/illustrations/journey/post-procedure.svg" alt="Ilustração do quarto capítulo" />;
 }
