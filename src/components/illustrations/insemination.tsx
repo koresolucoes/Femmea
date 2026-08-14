@@ -1,3 +1,3 @@
 export function InseminationIllustration() {
-  return <svg viewBox="0 0 240 150" aria-hidden="true"><rect width="240" height="150" rx="26" fill="#F0E5F5"/><path d="M47 60c0-13 16-19 27-7 11-12 27-6 27 7 0 16-27 32-27 32S47 76 47 60Z" fill="#9A6EB6"/><rect x="72" y="99" width="108" height="20" rx="10" fill="#D7C2E4"/><circle cx="120" cy="63" r="13" fill="#D2B8E0"/><path d="M99 100c4-24 11-34 21-34s18 10 23 34" fill="#A474BF"/><circle cx="190" cy="55" r="12" fill="#D8C4E4"/><path d="M174 98c3-26 9-39 17-39s15 13 18 39" fill="#8355A2"/><path d="M191 70v17M182 78h18" stroke="#FFF8FC" strokeWidth="3" strokeLinecap="round"/><path d="M23 121c20-12 29-32 27-55M210 29c-17 11-24 24-24 39" stroke="#BDA4CD" fill="none" strokeLinecap="round" opacity=".35"/></svg>;
+  return <img className="journey-artwork" src="/illustrations/journey/insemination-day.svg" alt="Ilustração do terceiro capítulo" />;
 }
