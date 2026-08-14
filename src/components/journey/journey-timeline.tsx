@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { CalendarIcon, CheckIcon, HeartIcon, SparklesIcon } from "@/components/icons";
 import { JOURNEY_STORY } from "@/lib/journey-story";
 import type { JourneyStage } from "@/types/journey";
-import { StoryStagePanel } from "./story-stage-panel";
+import { StoryStagePanel, type StoryCycleContext } from "./story-stage-panel";
 
 const icons = {
   planning: CalendarIcon,
@@ -14,11 +14,12 @@ const icons = {
   pregnancy_test: SparklesIcon,
 } satisfies Record<JourneyStage, typeof CalendarIcon>;
 
-export function JourneyTimeline({ initialStage, currentStage, procedureDate, pregnancyTestDate }: {
+export function JourneyTimeline({ initialStage, currentStage, procedureDate, pregnancyTestDate, cycleContext }: {
   initialStage: JourneyStage;
   currentStage: JourneyStage;
   procedureDate?: string | null;
   pregnancyTestDate?: string | null;
+  cycleContext?: StoryCycleContext | null;
 }) {
   const [openStage, setOpenStage] = useState<JourneyStage | null>(initialStage);
   const refs = useRef<Partial<Record<JourneyStage, HTMLElement | null>>>({});
@@ -26,7 +27,7 @@ export function JourneyTimeline({ initialStage, currentStage, procedureDate, pre
 
   useEffect(() => {
     if (!openStage) return;
-    const id = window.setTimeout(() => refs.current[openStage]?.scrollIntoView({ behavior: "smooth", block: "center" }), 170);
+    const id = window.setTimeout(() => refs.current[openStage]?.scrollIntoView({ behavior: "smooth", block: "center" }), 220);
     return () => window.clearTimeout(id);
   }, [openStage]);
 
@@ -54,7 +55,7 @@ export function JourneyTimeline({ initialStage, currentStage, procedureDate, pre
               <span className="story-toggle" aria-hidden="true">{isOpen ? "−" : "+"}</span>
             </button>
             <div className="story-stage-expander" data-open={isOpen ? "true" : "false"}>
-              <div><StoryStagePanel stage={stage} procedureDate={procedureDate} pregnancyTestDate={pregnancyTestDate} /></div>
+              <div><StoryStagePanel stage={stage} procedureDate={procedureDate} pregnancyTestDate={pregnancyTestDate} cycleContext={cycleContext} /></div>
             </div>
           </article>
         );
