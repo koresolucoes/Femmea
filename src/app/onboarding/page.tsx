@@ -12,15 +12,5 @@ export default async function OnboardingPage() {
   const { data: profile } = await supabase.from("femmea_profiles").select("display_name,onboarding_completed").eq("id", user.id).maybeSingle();
   if (profile?.onboarding_completed) redirect("/");
 
-  return (
-    <main className="onboarding-page">
-      <section className="onboarding-card">
-        <p className="auth-brand">Femmea</p>
-        <div className="step-pill">1 de 1</div>
-        <h1>Vamos preparar sua jornada</h1>
-        <p className="auth-subtitle">Só o essencial para personalizar sua tela inicial. Sem formulários intermináveis.</p>
-        <OnboardingForm initialName={profile?.display_name || ""} />
-      </section>
-    </main>
-  );
+  return <main className="onboarding-page"><section className="onboarding-card onboarding-card-v2"><p className="auth-brand">Femmea</p><div className="step-pill">3 passos curtos</div><h1>Sua jornada começa onde você está</h1><p className="auth-subtitle">Conte apenas o necessário para o Femmea montar uma experiência útil desde o primeiro dia.</p><OnboardingForm initialName={profile?.display_name || ""} /></section></main>;
 }
