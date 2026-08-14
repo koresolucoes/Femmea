@@ -28,8 +28,9 @@
 @keyframes femmeaSheetIn { from { opacity:.4; transform:translate(-50%,22px); } to { opacity:1; transform:translate(-50%,0); } }
 @keyframes femmeaFadeIn { from { opacity:0; } to { opacity:1; } }
 
-.journey-artwork { display:block; width:100%; height:auto; max-height:210px; object-fit:contain; }
-.story-stage-panel-inner .journey-artwork { border-radius:18px; background:#f4eaf8; }
+.journey-artwork { display:block; width:100%; height:auto; max-height:210px; object-fit:contain; background:#fff!important; border-radius:18px; }
+.story-stage-panel-inner .journey-artwork { border-radius:18px; background:#fff!important; }
+.story-illustration,.reminder-artwork,.pregnancy-artwork{background:#fff!important}
 
 .today-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:5px 0 12px; }
 .today-header .journey-brand { text-align:left; font-size:34px; }
