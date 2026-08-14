@@ -6,6 +6,7 @@ import "./faq-motion.css";
 import "./product-architecture.css";
 import "./onboarding-v2.css";
 import "./journey-outcome.css";
+import "./guided-care.css";
 
 export const metadata: Metadata = {
   title: { default: "Femmea", template: "%s · Femmea" },
