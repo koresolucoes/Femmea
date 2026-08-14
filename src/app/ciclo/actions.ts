@@ -15,6 +15,13 @@ async function auth() {
   return { supabase, userId };
 }
 
+function revalidateCycleRecords() {
+  revalidatePath("/");
+  revalidatePath("/registrar");
+  revalidatePath("/inseminacao");
+  revalidatePath("/inseminacao/cycle_monitoring");
+}
+
 export async function saveBasalTemperature(formData: FormData) {
   const observationDate = String(formData.get("observationDate") || "");
   const temperature = Number(String(formData.get("temperature") || "").replace(",", "."));
@@ -35,9 +42,8 @@ export async function saveBasalTemperature(formData: FormData) {
     { onConflict: "user_id,observation_date" },
   );
 
-  revalidatePath("/ciclo/temperatura");
-  revalidatePath("/inseminacao/cycle_monitoring");
-  redirect("/ciclo/temperatura?saved=1");
+  revalidateCycleRecords();
+  redirect("/registrar?saved=temperature");
 }
 
 export async function saveOvulationTest(formData: FormData) {
@@ -57,9 +63,8 @@ export async function saveOvulationTest(formData: FormData) {
     { onConflict: "user_id,observation_date" },
   );
 
-  revalidatePath("/ciclo/teste-ovulacao");
-  revalidatePath("/inseminacao/cycle_monitoring");
-  redirect("/ciclo/teste-ovulacao?saved=1");
+  revalidateCycleRecords();
+  redirect("/registrar?saved=ovulation");
 }
 
 export async function saveCervicalMucus(formData: FormData) {
@@ -79,7 +84,6 @@ export async function saveCervicalMucus(formData: FormData) {
     { onConflict: "user_id,observation_date" },
   );
 
-  revalidatePath("/ciclo/corrimento");
-  revalidatePath("/inseminacao/cycle_monitoring");
-  redirect("/ciclo/corrimento?saved=1");
+  revalidateCycleRecords();
+  redirect("/registrar?saved=mucus");
 }
