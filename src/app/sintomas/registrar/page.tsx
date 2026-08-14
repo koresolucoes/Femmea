@@ -60,10 +60,10 @@ export default async function RegisterSymptomsPage({ searchParams }: Props) {
   return (
     <MobileShell>
       <header className="screen-title-header">
-        <Link href="/inseminacao/cycle_monitoring" className="back-button" aria-label="Voltar">‹</Link>
+        <Link href="/registrar" className="back-button" aria-label="Voltar à central de registros">‹</Link>
         <div>
           <div className="journey-brand">Femmea</div>
-          <h1>Registrar sintomas</h1>
+          <h1>Sintomas físicos</h1>
         </div>
         <span className="header-spacer" />
       </header>
@@ -76,7 +76,7 @@ export default async function RegisterSymptomsPage({ searchParams }: Props) {
         )}
 
         <section>
-          <h2>Como você está se sentindo hoje?</h2>
+          <h2>O que você quer guardar sobre hoje?</h2>
           <p className="form-section-label">Sintomas físicos</p>
           <div className="symptom-chips">
             {symptoms.map(([value, label]) => (
@@ -89,7 +89,7 @@ export default async function RegisterSymptomsPage({ searchParams }: Props) {
         </section>
 
         <section>
-          <p className="form-section-label">Emocional</p>
+          <p className="form-section-label">Como você está <small>(opcional revisar)</small></p>
           <div className="mood-picker">
             {moods.map(([value, icon, label]) => (
               <label key={value}>
@@ -118,7 +118,7 @@ export default async function RegisterSymptomsPage({ searchParams }: Props) {
           </label>
         </section>
 
-        <button className="reference-primary-button" type="submit">Salvar registro</button>
+        <button className="reference-primary-button" type="submit">Salvar sintomas</button>
       </form>
     </MobileShell>
   );
