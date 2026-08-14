@@ -18,7 +18,6 @@ const allowedSymptoms = new Set([
 
 export async function saveSymptoms(formData: FormData) {
   const logDate = String(formData.get("logDate") || "");
-  const emotionalState = Number(formData.get("emotionalState"));
   const notes = String(formData.get("notes") || "").trim().slice(0, 1200);
   const symptoms = formData
     .getAll("symptoms")
@@ -26,7 +25,6 @@ export async function saveSymptoms(formData: FormData) {
     .filter((value) => allowedSymptoms.has(value));
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(logDate)) return;
-  if (!Number.isInteger(emotionalState) || emotionalState < 1 || emotionalState > 5) return;
 
   const supabase = await createClient();
   const { data: claimsData } = await supabase.auth.getClaims();
@@ -39,7 +37,6 @@ export async function saveSymptoms(formData: FormData) {
       {
         user_id: userId,
         log_date: logDate,
-        emotional_state: emotionalState,
         notes: notes || null,
         updated_at: new Date().toISOString(),
       },
@@ -61,7 +58,8 @@ export async function saveSymptoms(formData: FormData) {
     );
   }
 
+  revalidatePath("/");
+  revalidatePath("/registrar");
   revalidatePath("/inseminacao/cycle_monitoring");
-  revalidatePath("/sintomas/registrar");
-  redirect("/sintomas/registrar?saved=1");
+  redirect("/registrar?saved=symptoms");
 }
