@@ -17,25 +17,38 @@ await mkdir(outputDir, { recursive: true });
 
 function stripExportedBlackCanvas(source) {
   const viewBox = source.match(/viewBox=["']\s*0\s+0\s+([\d.]+)\s+([\d.]+)\s*["']/i);
-  if (!viewBox) return { source, changed: false };
+  if (!viewBox) return { source, changed: false, reason: "viewBox não encontrado" };
 
   const width = Number(viewBox[1]);
   const height = Number(viewBox[2]);
-  if (!Number.isFinite(width) || !Number.isFinite(height)) return { source, changed: false };
-
-  const blackPathPattern = /<path\s+fill=["']#000000["'][^>]*\sd=["']([\s\S]*?)["']\s*\/>/i;
-  const blackPath = source.match(blackPathPattern);
-  if (!blackPath) return { source, changed: false };
-
-  const d = blackPath[1];
-  const moveCommands = [...d.matchAll(/\nM(?=[\d.+-])/g)];
-  if (moveCommands.length < 2 || moveCommands[1].index == null) {
-    return { source, changed: false };
+  if (!Number.isFinite(width) || !Number.isFinite(height)) {
+    return { source, changed: false, reason: "viewBox inválido" };
   }
 
-  // The image generator/exporter placed a full-canvas rectangle as the first
-  // subpath inside the same black path that also contains legitimate dark
-  // artwork. Remove only that first subpath and preserve the illustration.
+  const pathStart = source.search(/<path\s+fill=["']#000000["']/i);
+  if (pathStart < 0) return { source, changed: false, reason: "path preto não encontrado" };
+
+  const tagEnd = source.indexOf(">", pathStart);
+  if (tagEnd < 0) return { source, changed: false, reason: "path preto inválido" };
+
+  const openingTag = source.slice(pathStart, tagEnd + 1);
+  const dAttribute = openingTag.match(/\sd=["']/i);
+  if (!dAttribute || dAttribute.index == null) {
+    return { source, changed: false, reason: "atributo d não encontrado" };
+  }
+
+  const quoteIndex = pathStart + dAttribute.index + dAttribute[0].length - 1;
+  const quote = source[quoteIndex];
+  const dStart = quoteIndex + 1;
+  const dEnd = source.indexOf(quote, dStart);
+  if (dEnd < 0) return { source, changed: false, reason: "fim do path não encontrado" };
+
+  const d = source.slice(dStart, dEnd);
+  const moveCommands = [...d.matchAll(/M(?=[\d.+-])/g)];
+  if (moveCommands.length < 2 || moveCommands[1].index == null) {
+    return { source, changed: false, reason: "segundo subpath não encontrado" };
+  }
+
   const artworkStart = moveCommands[1].index;
   const canvasSubpath = d.slice(0, artworkStart);
   const canvasWidth = (width + 1).toFixed(6);
@@ -46,15 +59,14 @@ function stripExportedBlackCanvas(source) {
     canvasSubpath.includes(canvasWidth) &&
     canvasSubpath.includes(canvasHeight);
 
-  if (!looksLikeGeneratedCanvas) return { source, changed: false };
+  if (!looksLikeGeneratedCanvas) {
+    return { source, changed: false, reason: "primeiro subpath não corresponde ao canvas" };
+  }
 
-  const artworkOnlyPath = d.slice(artworkStart + 1);
-  const cleanedPath = blackPath[0].replace(d, artworkOnlyPath);
+  const cleanedD = d.slice(artworkStart);
+  const cleanedSource = source.slice(0, dStart) + cleanedD + source.slice(dEnd);
 
-  return {
-    source: source.replace(blackPath[0], cleanedPath),
-    changed: true,
-  };
+  return { source: cleanedSource, changed: true, reason: "canvas preto removido" };
 }
 
 for (const file of files) {
@@ -67,9 +79,7 @@ for (const file of files) {
 
     await writeFile(outputPath, cleaned.source, "utf8");
 
-    console.log(
-      `[Femmea] asset preparado: ${file}${cleaned.changed ? " (canvas preto removido)" : ""}`,
-    );
+    console.log(`[Femmea] ${file}: ${cleaned.reason}`);
   } catch (error) {
     console.warn(
       `[Femmea] falha ao preparar ${file}:`,
