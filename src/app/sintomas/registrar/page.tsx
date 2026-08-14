@@ -5,8 +5,6 @@ import { isoDateInTimeZone } from "@/lib/date";
 import { createClient } from "@/lib/supabase/server";
 import { saveSymptoms } from "../actions";
 
-type Props = { searchParams: Promise<{ saved?: string }> };
-
 const symptoms = [
   ["colicas_leves", "Cólicas leves"],
   ["inchaco", "Inchaço"],
@@ -19,15 +17,7 @@ const symptoms = [
   ["outros", "Outros"],
 ] as const;
 
-const moods = [
-  [1, "☹", "Muito mal"],
-  [2, "🙁", "Mal"],
-  [3, "😐", "Neutra"],
-  [4, "🙂", "Bem"],
-  [5, "☺", "Muito bem"],
-] as const;
-
-export default async function RegisterSymptomsPage({ searchParams }: Props) {
+export default async function RegisterSymptomsPage() {
   const user = await requireUser();
   const supabase = await createClient();
   const { data: profile } = await supabase
@@ -41,7 +31,7 @@ export default async function RegisterSymptomsPage({ searchParams }: Props) {
 
   const { data: log } = await supabase
     .from("femmea_symptom_logs")
-    .select("id,emotional_state,notes")
+    .select("id,notes")
     .eq("user_id", user.id)
     .eq("log_date", today)
     .maybeSingle();
@@ -54,8 +44,6 @@ export default async function RegisterSymptomsPage({ searchParams }: Props) {
       .eq("symptom_log_id", log.id);
     selected = new Set((entries ?? []).map((entry) => entry.symptom_type));
   }
-
-  const params = await searchParams;
 
   return (
     <MobileShell>
@@ -71,35 +59,14 @@ export default async function RegisterSymptomsPage({ searchParams }: Props) {
       <form action={saveSymptoms} className="symptom-form">
         <input type="hidden" name="logDate" value={today} />
 
-        {params.saved === "1" && (
-          <div className="saved-banner">Registro salvo para hoje.</div>
-        )}
-
         <section>
           <h2>O que você quer guardar sobre hoje?</h2>
-          <p className="form-section-label">Sintomas físicos</p>
+          <p className="form-section-label">Marque somente o que fizer sentido</p>
           <div className="symptom-chips">
             {symptoms.map(([value, label]) => (
               <label key={value}>
                 <input type="checkbox" name="symptoms" value={value} defaultChecked={selected.has(value)} />
                 <span>{label}</span>
-              </label>
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <p className="form-section-label">Como você está <small>(opcional revisar)</small></p>
-          <div className="mood-picker">
-            {moods.map(([value, icon, label]) => (
-              <label key={value}>
-                <input
-                  type="radio"
-                  name="emotionalState"
-                  value={value}
-                  defaultChecked={(log?.emotional_state ?? 3) === value}
-                />
-                <span aria-label={label} title={label}>{icon}</span>
               </label>
             ))}
           </div>
@@ -113,7 +80,7 @@ export default async function RegisterSymptomsPage({ searchParams }: Props) {
               maxLength={1200}
               rows={5}
               defaultValue={log?.notes ?? ""}
-              placeholder="Escreva aqui..."
+              placeholder="Algo que você queira lembrar sobre hoje..."
             />
           </label>
         </section>
