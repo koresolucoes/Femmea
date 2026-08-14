@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prepare:illustrations": "node scripts/prepare-illustrations.mjs",
+    "predev": "npm run prepare:illustrations",
     "dev": "next dev",
+    "prebuild": "npm run prepare:illustrations",
     "build": "next build",
     "start": "next start",
     "lint": "tsc --noEmit",
