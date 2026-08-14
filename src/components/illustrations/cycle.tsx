@@ -1,3 +1,3 @@
 export function CycleIllustration() {
-  return <svg viewBox="0 0 240 150" aria-hidden="true"><rect width="240" height="150" rx="26" fill="#F2E8F7"/><circle cx="120" cy="52" r="17" fill="#D8C1E6"/><path d="M92 122c4-38 13-57 28-57s24 19 28 57" fill="#9B6DB7"/><circle cx="120" cy="104" r="12" fill="#D5BDE2"/><path d="M120 90c7 7 10 12 10 18 0 6-4 10-10 10s-10-4-10-10c0-6 3-11 10-18Z" fill="#7D4E9F"/><circle cx="181" cy="66" r="22" fill="#FFF8FC" opacity=".78"/><path d="M181 47 186 61 201 66 186 71 181 86 176 71 161 66 176 61Z" fill="#C7A5D7"/><path d="M45 111c14-15 28-21 43-20M196 112c-8-13-10-29-5-45" stroke="#B99ECD" strokeWidth="4" fill="none" strokeLinecap="round" opacity=".5"/></svg>;
+  return <img className="journey-artwork" src="/illustrations/journey/cycle-monitoring.svg" alt="Acompanhamento do ciclo" />;
 }
