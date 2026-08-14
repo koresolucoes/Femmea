@@ -6,9 +6,7 @@ import { isoDateInTimeZone } from "@/lib/date";
 import { createClient } from "@/lib/supabase/server";
 import { saveOvulationTest } from "../actions";
 
-type Props = { searchParams: Promise<{ saved?: string }> };
-
-export default async function OvulationTestPage({ searchParams }: Props) {
+export default async function OvulationTestPage() {
   const user = await requireUser();
   const supabase = await createClient();
   const { data: profile } = await supabase.from("femmea_profiles").select("timezone").eq("id", user.id).maybeSingle();
@@ -20,12 +18,11 @@ export default async function OvulationTestPage({ searchParams }: Props) {
     .eq("user_id", user.id)
     .eq("observation_date", today)
     .maybeSingle();
-  const params = await searchParams;
 
   return (
     <MobileShell>
       <header className="screen-title-header">
-        <Link href="/inseminacao/cycle_monitoring" className="back-button" aria-label="Voltar">‹</Link>
+        <Link href="/registrar" className="back-button" aria-label="Voltar à central de registros">‹</Link>
         <div><div className="journey-brand">Femmea</div><h1>Teste de ovulação</h1></div>
         <span className="header-spacer" />
       </header>
@@ -38,7 +35,6 @@ export default async function OvulationTestPage({ searchParams }: Props) {
 
       <form action={saveOvulationTest} className="tracking-form">
         <input type="hidden" name="observationDate" value={today} />
-        {params.saved === "1" && <div className="saved-banner">Teste salvo.</div>}
         <div className="choice-cards">
           {OVULATION_RESULTS.map((option) => (
             <label key={option.value}>
