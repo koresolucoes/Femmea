@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarIcon, DropletIcon, HeartIcon, HomeIcon, PlusIcon, SparklesIcon, UserIcon } from "@/components/icons";
+import { CalendarIcon, HeartIcon, HomeIcon, PlusIcon, SparklesIcon, UserIcon } from "@/components/icons";
 
 type ActiveNav = "home" | "today" | "journey" | "profile" | "calendar";
 
@@ -16,14 +16,12 @@ export function MobileShell({ children, active = "today" }: { children: React.Re
           <section className="quick-register-nav-sheet" aria-label="Registro rápido">
             <div className="sheet-handle" />
             <span className="stage-kicker">Registro rápido</span>
-            <h2>O que você quer guardar agora?</h2>
-            <p>Escolha uma ação e continue sua jornada sem perder o contexto.</p>
+            <h2>O que faz sentido guardar agora?</h2>
+            <p>Comece pelo contexto. As ferramentas específicas do ciclo ficam reunidas dentro do acompanhamento.</p>
             <div className="quick-register-nav-grid">
-              <Link href="/sintomas/registrar"><span><HeartIcon /></span><strong>Como estou</strong><small>Sintomas e emocional</small></Link>
-              <Link href="/ciclo/temperatura"><span><DropletIcon /></span><strong>Temperatura basal</strong><small>Registrar medição</small></Link>
-              <Link href="/ciclo/teste-ovulacao"><span><SparklesIcon /></span><strong>Teste de ovulação</strong><small>Guardar resultado</small></Link>
-              <Link href="/ciclo/corrimento"><span><DropletIcon /></span><strong>Corrimento cervical</strong><small>Registrar observação</small></Link>
-              <Link href="/lembretes"><span><CalendarIcon /></span><strong>Novo lembrete</strong><small>Consulta, exame ou tarefa</small></Link>
+              <Link href="/sintomas/registrar"><span><HeartIcon /></span><strong>Como estou hoje</strong><small>Sintomas e emocional</small></Link>
+              <Link href="/inseminacao?stage=cycle_monitoring"><span><SparklesIcon /></span><strong>Acompanhar ciclo</strong><small>Fase, calendário e registros</small></Link>
+              <Link href="/lembretes"><span><CalendarIcon /></span><strong>Novo lembrete</strong><small>Evento, exame ou tarefa</small></Link>
             </div>
           </section>
         </details>
