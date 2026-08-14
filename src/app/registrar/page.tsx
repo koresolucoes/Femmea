@@ -16,6 +16,14 @@ const moods = [
   [5, "☺", "Muito bem"],
 ] as const;
 
+const savedMessages: Record<string, string> = {
+  wellbeing: "Como você está hoje foi registrado.",
+  symptoms: "Sintomas de hoje foram registrados.",
+  temperature: "Temperatura de hoje foi registrada.",
+  ovulation: "Resultado do teste de ovulação foi registrado.",
+  mucus: "Observação do corrimento cervical foi registrada.",
+};
+
 export default async function RegisterHubPage({ searchParams }: Props) {
   const user = await requireUser();
   const supabase = await createClient();
@@ -53,11 +61,7 @@ export default async function RegisterHubPage({ searchParams }: Props) {
   }
 
   const params = await searchParams;
-  const savedMessage = params.saved === "wellbeing"
-    ? "Como você está hoje foi registrado."
-    : params.saved === "symptoms"
-      ? "Sintomas de hoje foram registrados."
-      : null;
+  const savedMessage = params.saved ? savedMessages[params.saved] ?? null : null;
 
   const dateLabel = new Intl.DateTimeFormat("pt-BR", {
     weekday: "long",
