@@ -1,0 +1,454 @@
+.treatment-header {
+  display: grid;
+  grid-template-columns: 42px 1fr 42px;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 18px 8px;
+}
+
+.treatment-header h1 {
+  margin: 2px 0 0;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  color: #392d43;
+}
+
+.treatment-hero {
+  margin: 8px 18px 14px;
+  padding: 20px;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #f8f1ff 0%, #fff8fb 100%);
+  border: 1px solid rgba(123, 74, 166, 0.12);
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.treatment-hero-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: #fff;
+  font-size: 1.35rem;
+  box-shadow: 0 8px 20px rgba(80, 48, 108, 0.08);
+}
+
+.treatment-hero h2 {
+  margin: 5px 0 7px;
+  font-size: 1.23rem;
+  line-height: 1.25;
+  color: #392d43;
+}
+
+.treatment-hero p,
+.treatment-safety p,
+.treatment-calendar-note p,
+.treatment-overdue-note {
+  margin: 0;
+  color: #72677b;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.treatment-safety {
+  margin: 0 18px 16px;
+  padding: 15px 16px;
+  border-radius: 18px;
+  background: #fffaf1;
+  border: 1px solid #f0dfbc;
+}
+
+.treatment-safety strong {
+  display: block;
+  color: #70582f;
+  font-size: 0.88rem;
+  margin-bottom: 5px;
+}
+
+.treatment-error {
+  margin: 0 18px 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fff3f3;
+  border: 1px solid #f3d1d1;
+  color: #8a4646;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.treatment-section {
+  margin: 18px;
+}
+
+.treatment-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.treatment-section-heading h2 {
+  margin: 2px 0 0;
+  font-size: 1.06rem;
+  color: #392d43;
+}
+
+.treatment-section-heading small,
+.treatment-section-heading > span,
+.treatment-section-heading a {
+  color: #8c7b96;
+  font-size: 0.75rem;
+}
+
+.treatment-section-heading a {
+  color: #7b4aa6;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.treatment-empty {
+  padding: 17px;
+  border-radius: 18px;
+  background: #faf8fb;
+  border: 1px dashed #ded4e4;
+  color: #7b7082;
+  font-size: 0.83rem;
+  line-height: 1.5;
+}
+
+.treatment-dose-list,
+.medication-list {
+  display: grid;
+  gap: 10px;
+}
+
+.treatment-dose-row {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 19px;
+  background: #fff;
+  border: 1px solid #e9e1ee;
+  box-shadow: 0 7px 22px rgba(66, 43, 77, 0.045);
+}
+
+.treatment-dose-row.is-completed {
+  background: #f7fcf8;
+  border-color: #d8eadc;
+}
+
+.treatment-dose-row.is-overdue {
+  background: #fffaf7;
+  border-color: #efdccc;
+}
+
+.treatment-dose-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: #f7f0fb;
+  font-size: 1.05rem;
+}
+
+.treatment-dose-copy {
+  min-width: 0;
+}
+
+.treatment-dose-copy > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.treatment-dose-copy strong {
+  color: #3e3346;
+  font-size: 0.9rem;
+}
+
+.treatment-dose-copy b {
+  color: #65576f;
+  font-size: 0.8rem;
+}
+
+.treatment-dose-copy small {
+  display: block;
+  margin: 3px 0 6px;
+  color: #8b7e92;
+}
+
+.dose-status {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.69rem;
+  font-weight: 700;
+}
+
+.dose-status-pending {
+  background: #f4eef8;
+  color: #6f4a8a;
+}
+
+.dose-status-completed {
+  background: #e9f6ec;
+  color: #4b7754;
+}
+
+.dose-status-overdue {
+  background: #f9ebdf;
+  color: #8a6243;
+}
+
+.treatment-dose-row form {
+  grid-column: 2;
+}
+
+.dose-primary-action,
+.dose-secondary-action {
+  border: 0;
+  border-radius: 12px;
+  min-height: 36px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.dose-primary-action {
+  background: #7b4aa6;
+  color: #fff;
+}
+
+.dose-secondary-action {
+  background: #eee7f3;
+  color: #6c527e;
+}
+
+.treatment-overdue-note {
+  margin-top: 10px;
+  padding: 0 3px;
+  font-size: 0.73rem;
+}
+
+.medication-card {
+  padding: 15px;
+  border-radius: 19px;
+  border: 1px solid #e8e0ed;
+  background: #fff;
+}
+
+.medication-card.is-inactive {
+  opacity: 0.62;
+}
+
+.medication-card-top,
+.medication-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 10px;
+}
+
+.medication-card-top strong {
+  display: block;
+  color: #3c3045;
+  font-size: 0.91rem;
+}
+
+.medication-card-top small {
+  display: block;
+  color: #8a7e91;
+  font-size: 0.72rem;
+  margin-top: 3px;
+}
+
+.medication-chip {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f2eaf7;
+  color: #6f4b88;
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.medication-meta {
+  margin-top: 12px;
+  color: #776b80;
+  font-size: 0.72rem;
+}
+
+.schedule-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.schedule-pills span {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #faf6fc;
+  border: 1px solid #eadfee;
+  color: #66586f;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.medication-add-card {
+  margin: 18px 18px 32px;
+  border-radius: 22px;
+  border: 1px solid #e6dce9;
+  background: #fff;
+  overflow: hidden;
+}
+
+.medication-add-card > summary {
+  list-style: none;
+  padding: 17px 18px;
+  color: #6f438f;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.medication-add-card > summary::-webkit-details-marker {
+  display: none;
+}
+
+.treatment-form {
+  border-top: 1px solid #eee6f1;
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.treatment-form label,
+.treatment-times {
+  display: grid;
+  gap: 6px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.treatment-form label > span,
+.treatment-times legend {
+  color: #62566a;
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.treatment-form input,
+.treatment-form select,
+.treatment-form textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #ded5e3;
+  border-radius: 13px;
+  background: #fdfcfd;
+  color: #3e3544;
+  font: inherit;
+  font-size: 0.84rem;
+  padding: 11px 12px;
+  outline: none;
+}
+
+.treatment-form input:focus,
+.treatment-form select:focus,
+.treatment-form textarea:focus {
+  border-color: #9f78bd;
+  box-shadow: 0 0 0 3px rgba(123, 74, 166, 0.08);
+}
+
+.treatment-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.treatment-times {
+  display: grid;
+  gap: 8px;
+}
+
+.treatment-time-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.treatment-time-remove,
+.treatment-time-add {
+  border: 0;
+  background: transparent;
+  color: #7b4aa6;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.treatment-time-remove {
+  padding: 0 4px;
+}
+
+.treatment-time-add {
+  width: fit-content;
+  padding: 4px 0;
+}
+
+.treatment-calendar-note {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #f8f4fa;
+}
+
+.treatment-submit {
+  border: 0;
+  min-height: 46px;
+  border-radius: 15px;
+  background: #7b4aa6;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.treatment-form-footnote {
+  text-align: center;
+  color: #8b7f91;
+  font-size: 0.69rem;
+  line-height: 1.45;
+}
+
+.event-medication {
+  border-color: #e3d6eb;
+}
+
+.event-medication > span {
+  background: #f3eafa;
+  color: #71488d;
+}
+
+@media (max-width: 360px) {
+  .treatment-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .medication-meta {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

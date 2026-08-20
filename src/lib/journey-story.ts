@@ -28,7 +28,10 @@ export const JOURNEY_STORY: JourneyStoryStage[] = [
       { title: "Um passo de cada vez", text: "Olhe apenas para o que precisa da sua atenção agora. O restante da jornada pode esperar até chegar o momento certo." },
       { title: "Cuidar de você também", text: "Além de consultas e exames, existe você. Se quiser, registre como está se sentindo e acompanhe seu próprio ritmo ao longo dos dias." },
     ],
-    actions: [{ label: "Ver meus próximos passos", href: "/inseminacao?tab=checklist", tone: "soft" }],
+    actions: [
+      { label: "Organizar medicamentos", href: "/medicamentos", tone: "primary" },
+      { label: "Ver meus próximos passos", href: "/inseminacao?tab=checklist", tone: "soft" },
+    ],
   },
   {
     key: "cycle_monitoring",
@@ -45,6 +48,7 @@ export const JOURNEY_STORY: JourneyStoryStage[] = [
     ],
     actions: [
       { label: "Registrar meu dia", href: "/registrar", tone: "primary" },
+      { label: "Meus medicamentos", href: "/medicamentos", tone: "soft" },
       { label: "Ver meu calendário", href: "/calendario", tone: "soft" },
     ],
   },
@@ -61,7 +65,10 @@ export const JOURNEY_STORY: JourneyStoryStage[] = [
       { title: "Tenha suas orientações por perto", text: "Deixe acessíveis as instruções que recebeu da sua equipe para consultar sempre que sentir necessidade." },
       { title: "Depois do procedimento", text: "Quando esse momento passar, a jornada continua com mais calma. O próximo capítulo ajuda você a acompanhar os dias de espera sem perder de vista o que realmente importa." },
     ],
-    actions: [{ label: "Revisar meus lembretes", href: "/lembretes", tone: "soft" }],
+    actions: [
+      { label: "Meus medicamentos", href: "/medicamentos", tone: "primary" },
+      { label: "Revisar meus lembretes", href: "/lembretes", tone: "soft" },
+    ],
   },
   {
     key: "post_procedure",
@@ -76,7 +83,10 @@ export const JOURNEY_STORY: JourneyStoryStage[] = [
       { title: "Orientações sempre por perto", text: "Mantenha notas e lembretes com aquilo que sua equipe pediu para você acompanhar durante esse período." },
       { title: "Espaço para suas emoções", text: "Você pode registrar como está se sentindo ou simplesmente seguir o dia. O app está aqui para acompanhar, não para cobrar." },
     ],
-    actions: [{ label: "Registrar meu dia", href: "/registrar", tone: "soft" }],
+    actions: [
+      { label: "Meus medicamentos", href: "/medicamentos", tone: "primary" },
+      { label: "Registrar meu dia", href: "/registrar", tone: "soft" },
+    ],
   },
   {
     key: "pregnancy_test",
@@ -91,7 +101,10 @@ export const JOURNEY_STORY: JourneyStoryStage[] = [
       { title: "Sua história continua aqui", text: "Esta tentativa permanece guardada com seus principais momentos, independentemente do resultado." },
       { title: "E depois?", text: "Cada resultado pode levar a um caminho diferente. Quando fizer sentido, você poderá continuar esta jornada, iniciar uma nova tentativa ou apenas manter este capítulo guardado." },
     ],
-    actions: [{ label: "Ver meu lembrete do teste", href: "/lembretes", tone: "primary" }],
+    actions: [
+      { label: "Ver meu lembrete do teste", href: "/lembretes", tone: "primary" },
+      { label: "Meus medicamentos", href: "/medicamentos", tone: "soft" },
+    ],
   },
 ];
 

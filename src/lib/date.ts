@@ -25,6 +25,67 @@ export function isoDateInTimeZone(date: Date, timeZone: string) {
   return `${year}-${pad(month)}-${pad(day)}`;
 }
 
+export function addDaysToIsoDate(value: string, days: number) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return value;
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]) + days, 12));
+  return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
+}
+
+function dateTimePartsInTimeZone(date: Date, timeZone: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(date);
+
+  const get = (type: Intl.DateTimeFormatPartTypes) =>
+    Number(parts.find((part) => part.type === type)?.value ?? 0);
+
+  return {
+    year: get("year"),
+    month: get("month"),
+    day: get("day"),
+    hour: get("hour"),
+    minute: get("minute"),
+    second: get("second"),
+  };
+}
+
+export function zonedDateTimeToIso(dateValue: string, timeValue: string, timeZone: string) {
+  const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateValue);
+  const timeMatch = /^(\d{2}):(\d{2})$/.exec(timeValue);
+  if (!dateMatch || !timeMatch) return null;
+
+  const target = {
+    year: Number(dateMatch[1]),
+    month: Number(dateMatch[2]),
+    day: Number(dateMatch[3]),
+    hour: Number(timeMatch[1]),
+    minute: Number(timeMatch[2]),
+  };
+  if (target.month < 1 || target.month > 12 || target.day < 1 || target.day > 31 || target.hour > 23 || target.minute > 59) return null;
+
+  const desiredAsUtc = Date.UTC(target.year, target.month - 1, target.day, target.hour, target.minute, 0);
+  let timestamp = desiredAsUtc;
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const observed = dateTimePartsInTimeZone(new Date(timestamp), timeZone);
+    const observedAsUtc = Date.UTC(observed.year, observed.month - 1, observed.day, observed.hour, observed.minute, observed.second);
+    const delta = desiredAsUtc - observedAsUtc;
+    timestamp += delta;
+    if (Math.abs(delta) < 1000) break;
+  }
+
+  const result = new Date(timestamp);
+  return Number.isNaN(result.getTime()) ? null : result.toISOString();
+}
+
 export function currentWeekDates(timeZone: string, now = new Date()) {
   const local = dateInTimeZone(now, timeZone);
   const anchor = new Date(Date.UTC(local.year, local.month - 1, local.day, 12));

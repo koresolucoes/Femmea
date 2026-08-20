@@ -6,12 +6,14 @@ import { MobileShell } from "@/components/mobile-shell";
 import { SetupRequired } from "@/components/setup-required";
 import { requireUser } from "@/lib/auth";
 import { CYCLE_PHASES, getCycleDay, getEstimatedCyclePhase, normalizeCycleDay } from "@/lib/cycle";
-import { isoDateInTimeZone } from "@/lib/date";
+import { addDaysToIsoDate, isoDateInTimeZone, zonedDateTimeToIso } from "@/lib/date";
 import { JOURNEY_STATE_META, isJourneyState, stateForDates } from "@/lib/journey-state";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
-type TimelineItem = { title: string; at: string; kind: "reminder" | "event" };
+type TimelineItem = { title: string; at: string; kind: "reminder" | "event" | "medication" };
+type MedicationSummary = { id: string; name: string; dose_label: string; administration_route: string };
+type MedicationDose = { id: string; medication_id: string; scheduled_for: string; status: string; completed_at: string | null };
 function firstName(value: string | null | undefined) { return value?.trim().split(/\s+/)[0] || "você"; }
 
 export default async function Home() {
@@ -27,26 +29,72 @@ export default async function Home() {
   const now = new Date();
   const nowIso = now.toISOString();
   const today = isoDateInTimeZone(now, timeZone);
+  const tomorrow = addDaysToIsoDate(today, 1);
+  const todayStart = zonedDateTimeToIso(today, "00:00", timeZone) ?? `${today}T00:00:00Z`;
+  const tomorrowStart = zonedDateTimeToIso(tomorrow, "00:00", timeZone) ?? `${tomorrow}T00:00:00Z`;
   const absoluteCycleDay = getCycleDay(journey?.cycle_start_date, timeZone, now);
   const cycleDay = normalizeCycleDay(absoluteCycleDay, cycleLength);
   const cyclePhaseInfo = CYCLE_PHASES[getEstimatedCyclePhase(cycleDay, cycleLength)];
 
-  const [hydrationResponse, symptomResponse, observationResponse, reminderResponse, eventResponse] = await Promise.all([
+  let medications: MedicationSummary[] = [];
+  if (journey?.id) {
+    const { data } = await supabase.from("femmea_treatment_medications")
+      .select("id,name,dose_label,administration_route")
+      .eq("user_id", user.id)
+      .eq("journey_id", journey.id)
+      .eq("active", true);
+    medications = (data ?? []) as MedicationSummary[];
+  }
+  const medicationIds = medications.map((medication) => medication.id);
+
+  const emptyDoseResponse = Promise.resolve({ data: [] as MedicationDose[] });
+  const todayDoseQuery = medicationIds.length
+    ? supabase.from("femmea_medication_dose_occurrences")
+      .select("id,medication_id,scheduled_for,status,completed_at")
+      .eq("user_id", user.id)
+      .in("medication_id", medicationIds)
+      .gte("scheduled_for", todayStart)
+      .lt("scheduled_for", tomorrowStart)
+      .neq("status", "cancelled")
+      .order("scheduled_for", { ascending: true })
+    : emptyDoseResponse;
+  const nextDoseQuery = medicationIds.length
+    ? supabase.from("femmea_medication_dose_occurrences")
+      .select("id,medication_id,scheduled_for,status,completed_at")
+      .eq("user_id", user.id)
+      .in("medication_id", medicationIds)
+      .eq("status", "pending")
+      .gte("scheduled_for", nowIso)
+      .order("scheduled_for", { ascending: true })
+      .limit(1)
+    : emptyDoseResponse;
+
+  const [hydrationResponse, symptomResponse, observationResponse, reminderResponse, eventResponse, todayDoseResponse, nextDoseResponse] = await Promise.all([
     supabase.from("femmea_hydration_logs").select("amount_ml").eq("user_id", user.id).eq("consumed_on", today),
     supabase.from("femmea_symptom_logs").select("id").eq("user_id", user.id).eq("log_date", today).maybeSingle(),
     supabase.from("femmea_cycle_observations").select("id").eq("user_id", user.id).eq("observation_date", today).maybeSingle(),
     supabase.from("femmea_reminders").select("title,scheduled_for,event_id").eq("user_id", user.id).eq("enabled", true).gte("scheduled_for", nowIso).order("scheduled_for", { ascending: true }).limit(12),
     supabase.from("femmea_journey_events").select("title,starts_at,status").eq("user_id", user.id).eq("status", "scheduled").gte("starts_at", nowIso).order("starts_at", { ascending: true }).limit(12),
+    todayDoseQuery,
+    nextDoseQuery,
   ]);
 
   const hydrationTotal = (hydrationResponse.data ?? []).reduce((sum, item) => sum + item.amount_ml, 0);
   const hydrationGoal = profile.daily_water_goal_ml || 2000;
   const hydrationProgress = Math.min(100, Math.round((hydrationTotal / hydrationGoal) * 100));
+  const medicationById = new Map(medications.map((medication) => [medication.id, medication]));
+  const todayDoses = (todayDoseResponse.data ?? []) as MedicationDose[];
+  const nextDose = ((nextDoseResponse.data ?? []) as MedicationDose[])[0] ?? null;
   const reminders: TimelineItem[] = (reminderResponse.data ?? []).filter((item) => !item.event_id).map((item) => ({ title: item.title, at: item.scheduled_for, kind: "reminder" }));
   const events: TimelineItem[] = (eventResponse.data ?? []).map((item) => ({ title: item.title, at: item.starts_at, kind: "event" }));
-  const upcoming = [...reminders, ...events].sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
+  const medicationNext: TimelineItem[] = nextDose ? [{
+    title: `${medicationById.get(nextDose.medication_id)?.name ?? "Medicamento"} · ${medicationById.get(nextDose.medication_id)?.dose_label ?? "dose cadastrada"}`,
+    at: nextDose.scheduled_for,
+    kind: "medication",
+  }] : [];
+  const upcoming = [...reminders, ...events, ...medicationNext].sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
   const nextItem = upcoming[0] ?? null;
-  const todayScheduled = upcoming.filter((item) => isoDateInTimeZone(new Date(item.at), timeZone) === today).slice(0, 3);
+  const todayScheduled = [...reminders, ...events].sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime()).filter((item) => isoDateInTimeZone(new Date(item.at), timeZone) === today).slice(0, 3);
   const storedState = journey && isJourneyState(journey.current_state) ? journey.current_state : "preparation";
   const currentState = journey ? stateForDates({ currentState: storedState, procedureDate: journey.procedure_date, pregnancyTestDate: journey.pregnancy_test_date, outcome: journey.outcome }) : "preparation";
   const stateMeta = JOURNEY_STATE_META[currentState];
@@ -66,7 +114,9 @@ export default async function Home() {
       <div className="guided-cycle-actions"><Link href="/inseminacao?stage=cycle_monitoring">Acompanhar meu ciclo</Link></div>
     </section>}
 
-    <section className="today-section"><div className="today-section-heading"><h2>Próximo passo</h2><Link href="/calendario">Ver calendário</Link></div>{nextItem ? <div className="today-next-card"><span className="today-next-icon"><CalendarIcon /></span><div><strong>{nextItem.title}</strong><small>{formatMoment(nextItem.at)}</small></div><b>próximo</b></div> : <div className="today-empty">Nenhum compromisso futuro cadastrado. Quando você adicionar consultas, exames ou lembretes, o próximo passo aparece aqui.</div>}</section>
+    <section className="today-section"><div className="today-section-heading"><h2>Próximo passo</h2><Link href="/calendario">Ver calendário</Link></div>{nextItem ? <div className="today-next-card"><span className="today-next-icon"><CalendarIcon /></span><div><strong>{nextItem.title}</strong><small>{nextItem.kind === "medication" ? `Medicamento · ${formatMoment(nextItem.at)}` : formatMoment(nextItem.at)}</small></div><b>próximo</b></div> : <div className="today-empty">Nenhum compromisso futuro cadastrado. Quando você adicionar consultas, exames, medicamentos ou lembretes, o próximo passo aparece aqui.</div>}</section>
+
+    {todayDoses.length > 0 && <section className="today-section"><div className="today-section-heading"><h2>Medicamentos</h2><Link href="/medicamentos">Ver tratamento</Link></div><div className="today-list">{todayDoses.map((dose) => { const medication = medicationById.get(dose.medication_id); if (!medication) return null; const completed = dose.status === "completed"; const overdue = !completed && new Date(dose.scheduled_for).getTime() < now.getTime(); return <Link className="today-task" href="/medicamentos" key={dose.id}><span>{medication.administration_route === "injection" ? "💉" : "💊"}</span><div><strong>{medication.name}</strong><small>{medication.dose_label} · {completed ? "Realizada" : overdue ? "Ainda não registrada" : "Programada"}</small></div><b>{formatTime(dose.scheduled_for)}</b></Link>; })}</div></section>}
 
     <section className="today-section"><div className="today-section-heading"><h2>Para hoje</h2><Link href="/lembretes">Organizar</Link></div><div className="today-list">{todayScheduled.map((item) => <div className="today-task" key={`${item.kind}-${item.at}-${item.title}`}><span><CalendarIcon /></span><div><strong>{item.title}</strong><small>{item.kind === "event" ? "Evento da jornada" : "Lembrete"}</small></div><b>{formatTime(item.at)}</b></div>)}{!symptomResponse.data && <Link className="today-task" href="/registrar"><span><HeartIcon /></span><div><strong>Como você está hoje?</strong><small>Abra a central e escolha o que deseja registrar</small></div><b>registrar</b></Link>}{(currentState === "cycle_monitoring" || currentState === "procedure_scheduled") && !observationResponse.data && <Link className="today-task" href="/inseminacao?stage=cycle_monitoring"><span><SparklesIcon /></span><div><strong>Revisar seu ciclo</strong><small>Veja a fase atual antes de escolher um registro</small></div><b>abrir</b></Link>}</div></section>
 
