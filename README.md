@@ -48,8 +48,7 @@ A Publishable key não é versionada. Configure-a em `.env.local` e posteriormen
 - Data de procedimento configurável
 - Sugestão automática de teste em D+14 quando não informado
 - Checklist persistente por jornada
-- Trigger de bootstrap do checklist no banco
-- Backfill seguro para jornadas existentes
+- Criação do checklist no onboarding da aplicação
 - Progresso do checklist
 - Páginas individuais das 5 fases
 - Biblioteca inicial de conteúdos
@@ -83,15 +82,19 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 ## Migrations
-Aplique exatamente nesta ordem:
+Em um projeto Supabase novo, aplique os arquivos versionados nesta ordem:
 
 ```text
-supabase/migrations/0001_initial.sql
-supabase/migrations/0002_auth_onboarding_hydration.sql
-supabase/migrations/0003_journey_engine.sql
+supabase/migrations/0001_femmea_tables.sql
+supabase/migrations/0002_femmea_enable_rls.sql
+supabase/migrations/0003_femmea_indexes.sql
+supabase/migrations/0004_femmea_policies.sql
+supabase/migrations/0005_femmea_hardening.sql
+supabase/migrations/0006_femmea_cycle_tracking.sql
+supabase/migrations/0007_femmea_product_architecture.sql
 ```
 
-A `0003_journey_engine.sql` cria `femmea_journey_checklist_items`, RLS, índices, trigger de atualização, trigger que cria o checklist automaticamente para novas jornadas e backfill das jornadas existentes.
+As migrations `0001` a `0005` definem as tabelas, RLS, índices, políticas e permissões. A `0006` adiciona o acompanhamento do ciclo; a `0007`, tratamentos, tentativas e eventos da jornada. O checklist inicial é criado pela aplicação em [`src/app/onboarding/actions.ts`](src/app/onboarding/actions.ts).
 
 ## Configuração de Auth no Supabase
 Em **Authentication → URL Configuration**:
