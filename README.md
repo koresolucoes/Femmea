@@ -1,6 +1,8 @@
-# Femmea · Milestone 03
+# Femmea — PWA para organizar a jornada de inseminação
 
 PWA mobile-first para acompanhamento da jornada de inseminação, com **Next.js + Vercel + Supabase**.
+
+O aplicativo reúne calendário, checklist e acompanhamento das etapas da jornada. A autenticação e as políticas RLS do Supabase controlam o acesso aos dados de cada conta. Para experimentar o fluxo, use uma conta de teste e dados fictícios.
 
 ## Stack
 - Next.js 16 / App Router
